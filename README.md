@@ -3,7 +3,7 @@
 This repository hosts the code and datasets for the **UniR** project, accompanying the paper [*Universal Reasoner: A Single, Composable Plug-and-Play Reasoner for Frozen LLMs*](https://arxiv.org/abs/). 
 
 
-![Main Figure](assets/overall.png)
+![Main Figure](./assets/overall.png)
 Overview: UniR is a lightweight, plug-and-play reasoning module that enables modular, reward-driven reasoning enhancements for any frozen LLM, achieving strong generalization and composability without retraining the backbone.
 
 <!-- ## Resources -->
