@@ -1,0 +1,64 @@
+# Model arguments
+model_name_or_path: meta-llama/Llama-3.2-1B-Instruct
+ref_name_or_path: meta-llama/Llama-3.2-3B-Instruct 
+model_revision: main
+torch_dtype: bfloat16
+attn_implementation: flash_attention_2
+dataset_index: 0
+# load_in_4bit: true
+# use_bnb_nested_quant: true
+# use_peft: true
+
+
+# Data training arguments
+dataset_name: data/math12k
+# dataset_config: default
+# system_prompt: "A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer, and put your final answer within \\boxed{{}} . The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think> <answer> answer here </answer>. Note that respond by English, NOT use other languages."
+
+# GRPO trainer config
+bf16: true
+use_vllm: false
+# use_vllm: true
+vllm_device: auto
+vllm_enforce_eager: true
+vllm_gpu_memory_utilization: 0.6
+vllm_max_model_len: 2560
+do_eval: false
+gradient_accumulation_steps: 4
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+hub_model_id: UniR
+hub_strategy: every_save
+learning_rate: 1.0e-06
+log_completions: true
+log_level: info
+logging_first_step: true
+logging_steps: 1
+logging_strategy: steps
+lr_scheduler_type: cosine_with_min_lr
+lr_scheduler_kwargs:
+  min_lr_rate: 0.1
+max_prompt_length: 512
+max_completion_length: 2560
+max_steps: 100
+num_generations: 8
+num_train_epochs: 1
+output_dir: run/UniR_math12k
+run_name: UniR_math12k
+overwrite_output_dir: true
+per_device_eval_batch_size: 8
+per_device_train_batch_size: 8
+push_to_hub: false
+report_to:
+- tensorboard
+reward_funcs:
+- rulebased_correct
+reward_weights:
+- 1.0
+save_strategy: "steps"
+save_steps: 50
+seed: 42
+temperature: 0.7
+beta: 0.0
+warmup_ratio: 0.1

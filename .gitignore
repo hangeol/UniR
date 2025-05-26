@@ -1,0 +1,7 @@
+test.log
+run/
+*__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+setup.cfg
