@@ -97,7 +97,6 @@ CHECKPOINT_ROOT="checkpoint"
 CONFIG="recipes/unir.yaml"
 SCRIPT="src/unir/evaluate.py"
 mkdir -p "$CHECKPOINT_ROOT/output_log"
-ckpt_num=500
 dataset_index=4
 
 for ckpt_num in $(seq 100 100 1000); do
@@ -125,15 +124,16 @@ for ckpt_num in $(seq 100 100 1000); do
 done
 ```
 
-- Math 500 (Qwen) 
+- Math 500 + OOD Benchmarks
+
+To evaluate models trained on Math12k, we use four benchmarks: Math500 , Minerva, AIME 2024, and OlympiadBench, to assess generalization to advanced math problems.
+
 ```bash
 
 CHECKPOINT_ROOT="checkpoint"
 CONFIG="recipes/unir.yaml"
 SCRIPT="src/unir/evaluate.py"
 mkdir -p "$CHECKPOINT_ROOT/output_log"
-ckpt_num=500
-
 for ckpt_num in $(seq 100 100 1000); do
   for dataset_index in 0 1 2 3; do
       LOG_PATH="${CHECKPOINT_ROOT}/output_log/checkpoint-${ckpt_num}_dataset_${dataset_index}"
