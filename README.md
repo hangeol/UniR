@@ -1,6 +1,6 @@
 # Universal Reasoner: A Single, Composable Plug-and-Play Reasoner for Frozen LLMs
 
-This repository hosts the code and datasets for the **UniR** project, accompanying the paper [*Universal Reasoner: A Single, Composable Plug-and-Play Reasoner for Frozen LLMs*](https://arxiv.org/abs/). 
+This repository hosts the code and datasets for the **UniR** project, accompanying the paper [*Universal Reasoner: A Single, Composable Plug-and-Play Reasoner for Frozen LLMs*](https://arxiv.org/abs/2505.19075). 
 
 
 ![Main Figure](./assets/overall.png)
@@ -174,4 +174,9 @@ Parts of the code have been adapted and customized to support the UniR framework
 ## Citation
 If this project aids your work, please cite it as:
 
-> Citation information will be updated soon.  
+> @article{Qwen-VL,
+  title={Universal Reasoner: A Single, Composable Plug-and-Play Reasoner for Frozen LLMs},
+  author={Jaemin Kim, Hangeol Chang, Hyunmin Hwang, Choonghan Kim, Jong Chul Ye},
+  journal={arXiv preprint arXiv:2505.19075},
+  year={2025}
+}
