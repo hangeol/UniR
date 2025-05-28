@@ -175,7 +175,7 @@ Parts of the code have been adapted and customized to support the UniR framework
 If this project aids your work, please cite it as:
 
 ```
-@article{Qwen-VL,
+@article{UniversalReasoner2025,
   title={Universal Reasoner: A Single, Composable Plug-and-Play Reasoner for Frozen LLMs},
   author={Jaemin Kim, Hangeol Chang, Hyunmin Hwang, Choonghan Kim, Jong Chul Ye},
   journal={arXiv preprint arXiv:2505.19075},
