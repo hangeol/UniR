@@ -41,7 +41,7 @@ ACCELERATE_LOG_LEVEL=info accelerate launch \
   --config_file recipes/accelerate_configs/zero2.yaml \
   --main_process_port 6667 \
   --num_processes=2 \
-  train.py \
+  src/unir/train.py \
   --config recipes/unir.yaml \
   --dataset_name dataset/gsm8k \
   --dataset_config default \
@@ -67,7 +67,7 @@ ACCELERATE_LOG_LEVEL=info accelerate launch \
   --config_file recipes/accelerate_configs/zero2.yaml \
   --main_process_port 6667 \
   --num_processes=2 \
-  train.py \
+  src/unir/train.py \
   --config recipes/unir.yaml \
   --dataset_name dataset/math12k \
   --dataset_config default \
