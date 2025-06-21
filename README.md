@@ -116,7 +116,7 @@ for ckpt_num in $(seq 100 100 1000); do
     --run_name unir_test \
     --reward_funcs rule_based_accuracy \
     --reward_weights 0.5 \
-    --temperature 0.0 \ #Automatically set do_sample to False when temp is zero.
+    --temperature 0.0 \
     --beta 0.0 \
     --dataset_index $dataset_index \
     --system_prompt "A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively. Your response should be in the following format: <think>\nYour reasoning here\n</think>\n<answer>\n answer here \n</answer>. The reasoning process Note that respond by English, NOT use other languages." \
@@ -152,7 +152,7 @@ for ckpt_num in $(seq 100 100 1000); do
       --run_name unir_test \
       --reward_funcs boxed_reward \
       --reward_weights 0.5 \
-      --temperature 0.0 \ #Automatically set do_sample to False when temp is zero.
+      --temperature 0.0 \
       --dataset_index $dataset_index \
       --system_prompt "A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively. Your response should be in the following format: <think>\nYour reasoning here\n</think>\n<answer>\n\boxed{{your answer here}}\n</answer>." \
       > "${LOG_PATH}.log" 2>&1
