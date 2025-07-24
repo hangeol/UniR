@@ -27,7 +27,7 @@ pip install vllm==0.7.2
 pip install setuptools
 pip install flash-attn --no-build-isolation
 pip install bitsandbytes
-pip install -e ".[dev]"
+pip install -e .
 pip install peft datasets pylatexenc tensorboardx
 ```
 
@@ -115,7 +115,7 @@ for ckpt_num in $(seq 100 100 1000); do
     --output_dir "$LOG_PATH" \
     --run_name unir_test \
     --reward_funcs rule_based_accuracy \
-    --reward_weights 0.5 \
+    --reward_weights 1.0 \
     --temperature 0.0 \
     --beta 0.0 \
     --dataset_index $dataset_index \
@@ -151,7 +151,7 @@ for ckpt_num in $(seq 100 100 1000); do
       --output_dir "$LOG_PATH" \
       --run_name unir_test \
       --reward_funcs boxed_reward \
-      --reward_weights 0.5 \
+      --reward_weights 1.0 \
       --temperature 0.0 \
       --dataset_index $dataset_index \
       --system_prompt "A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively. Your response should be in the following format: <think>\nYour reasoning here\n</think>\n<answer>\n\boxed{{your answer here}}\n</answer>." \

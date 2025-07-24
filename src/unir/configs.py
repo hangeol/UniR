@@ -18,7 +18,8 @@ from typing import Optional
 from trl import ModelConfig , ScriptArguments
 import trl
 
-
+from trl.trainer.grpo_config import GRPOConfig
+from transformers import TrainingArguments
 
 
 
@@ -101,7 +102,7 @@ class GRPOScriptArguments(ScriptArguments):
 
 # TODO: add the shared options with a mixin to reduce code duplication
 @dataclass
-class GRPOConfig(trl.GRPOConfig):
+class UniRGRPOConfig(GRPOConfig):
     """
     args for callbacks, benchmarks etc
     """
@@ -137,6 +138,51 @@ class GRPOConfig(trl.GRPOConfig):
             "synchronized with the reference policy. To use this parameter, you must set `sync_ref_model=True`."
         },
     )
+    def __post_init__(self):
+        self.bf16 = not (self.fp16) if self.bf16 is None else self.bf16
+
+        super(GRPOConfig, self).__post_init__()
+
+        num_processes = self.world_size
+        # The current default effective batch size
+        if self.generation_batch_size is None and self.steps_per_generation is None:
+            self.steps_per_generation = self.gradient_accumulation_steps
+            self.generation_batch_size = self.per_device_train_batch_size * num_processes * self.steps_per_generation
+        elif self.generation_batch_size is not None and self.steps_per_generation is None:
+            # Just ensure the value is divisible by the global batch size
+            if self.generation_batch_size % (self.per_device_train_batch_size * num_processes) != 0:
+                raise ValueError(
+                    f"generation_batch_size ({self.generation_batch_size}) must be divisible by the global batch size "
+                    f"({self.per_device_train_batch_size * num_processes})."
+                )
+            self.steps_per_generation = self.generation_batch_size // (
+                self.per_device_train_batch_size * num_processes
+            )
+        elif self.generation_batch_size is None and self.steps_per_generation is not None:
+            self.generation_batch_size = self.per_device_train_batch_size * num_processes * self.steps_per_generation
+        else:
+            raise ValueError(
+                "'generation_batch_size' and 'steps_per_generation' can not be both configured at the same time"
+            )
+
+        # The generation batch must contain full prompt groups (no partials), so it must be divisible by
+        # num_generations.
+        if self.generation_batch_size % self.num_generations != 0:
+            raise ValueError(
+                f"generation_batch_size ({self.generation_batch_size}) must be divisible by num_generations "
+                f"({self.num_generations})."
+            )
+
+        # for smooth evaluation we deleted num generation condition
+        # if self.num_generations < 2:
+        #     raise ValueError(
+        #         "GRPO requires at least 2 generations per prompt to calculate the advantages. You provided "
+        #         f"{self.num_generations}, which is less than the minimum required."
+        #     )
+
+        if self.delta is not None and self.use_liger_loss:
+            raise ValueError("Liger loss does not support two-sided GRPO loss yet.")
+    
 
 
 @dataclass

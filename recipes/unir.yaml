@@ -18,11 +18,7 @@ dataset_name: data/math12k
 # GRPO trainer config
 bf16: true
 use_vllm: false
-# use_vllm: true
-vllm_device: auto
-vllm_enforce_eager: true
 vllm_gpu_memory_utilization: 0.6
-vllm_max_model_len: 2560
 do_eval: false
 gradient_accumulation_steps: 4
 gradient_checkpointing: true

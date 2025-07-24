@@ -13,7 +13,7 @@ from unir.utils.callbacks import get_callbacks
 from trl import TrlParser, get_peft_config
 from peft import PeftModel, PeftConfig
 from unir.trainer.UniRTrainer import UniRGRPOTrainer
-from unir.configs import GRPOConfig,UniRGRPOModelConfig,GRPOScriptArguments
+from unir.configs import UniRGRPOConfig,UniRGRPOModelConfig,GRPOScriptArguments
 import json
 import textwrap
 
@@ -121,7 +121,7 @@ def evaluate(script_args, training_args, model_args):
             peft_config = PeftConfig.from_pretrained(load_checkpoint)
             base_model = model_args.model_name_or_path
         else : 
-            base_model = os.path.join(load_checkpoint, 'model')
+            base_model = load_checkpoint
             peft_config = get_peft_config(model_args)
     else : 
         base_model = model_args.model_name_or_path
@@ -163,6 +163,6 @@ def evaluate(script_args, training_args, model_args):
 
 
 if __name__ == "__main__":
-    parser = TrlParser((GRPOScriptArguments, GRPOConfig, UniRGRPOModelConfig))
+    parser = TrlParser((GRPOScriptArguments, UniRGRPOConfig, UniRGRPOModelConfig))
     script_args, training_args, model_args = parser.parse_args_and_config()
     evaluate(script_args, training_args, model_args)
