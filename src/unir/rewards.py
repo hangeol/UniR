@@ -1050,7 +1050,7 @@ def boxed_reward_fn_llama(completions, answer, **kwargs) -> list[float]:
         print("+ is_correct", is_correct)
         print("--------------")
         if is_correct:
-            r = 2.0  # Correctness reward.
+            r = 1.0  # Correctness reward.
         else:
             r = 0.0  # Formatted but wrong answer; no format reward to avoid hacking.
         rewards.append(float(r))
@@ -1083,7 +1083,7 @@ def boxed_reward_fn_qwen(completions, solution, **kwargs) -> list[float]:
         print("+ is_correct", is_correct)
         print("--------------")
         if is_correct:
-            r = 2.0  # Correctness reward.
+            r = 1.0  # Correctness reward.
         else:
             r = 0.0  # Formatted but wrong answer; no format reward to avoid hacking.
         rewards.append(float(r))
@@ -1191,4 +1191,4 @@ def rulebased_correct_reward_func(prompts, completions, answer, **kwargs) -> lis
     responses = normalize_completions(completions)
     extracted_responses = [extract_number_answer(r) for r in responses]
     answer = [extract_hash_answer(r) for r in answer]
-    return [2.0 if r == a else 0.0 for r, a in zip(extracted_responses, answer)]
+    return [1.0 if r == a else 0.0 for r, a in zip(extracted_responses, answer)]

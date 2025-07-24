@@ -28,7 +28,7 @@ from datasets import load_dataset
 from transformers import set_seed
 from transformers.trainer_utils import get_last_checkpoint
 import textwrap
-from unir.configs import GRPOConfig,UniRGRPOModelConfig,GRPOScriptArguments
+from unir.configs import UniRGRPOConfig,UniRGRPOModelConfig,GRPOScriptArguments
 
 from rewards import (rulebased_correct_reward_func, boxed_reward_fn_qwen , boxed_reward_fn_llama)
 from unir.utils import get_tokenizer
@@ -204,6 +204,6 @@ def main(script_args, training_args, model_args):
 
 
 if __name__ == "__main__":
-    parser = TrlParser((GRPOScriptArguments, GRPOConfig, UniRGRPOModelConfig))
+    parser = TrlParser((GRPOScriptArguments, UniRGRPOConfig, UniRGRPOModelConfig))
     script_args, training_args, model_args = parser.parse_args_and_config()
     main(script_args, training_args, model_args)
