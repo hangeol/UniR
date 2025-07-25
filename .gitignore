@@ -5,3 +5,7 @@ run/
 *.pyo
 *.egg-info/
 setup.cfg
+*.slurm
+*.err
+*.out
+.env
