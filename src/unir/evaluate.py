@@ -16,7 +16,8 @@ from unir.trainer.UniRTrainer import UniRGRPOTrainer
 from unir.configs import UniRGRPOConfig,UniRGRPOModelConfig,GRPOScriptArguments
 import json
 import textwrap
-
+from dotenv import load_dotenv
+load_dotenv()
 DATASET_NAME = {
     'aime24':'HuggingFaceH4/aime_2024', 
     'math500':'HuggingFaceH4/MATH-500', 
@@ -25,7 +26,8 @@ DATASET_NAME = {
     'minerva':'knoveleng/Minerva-Math', 
     'gsm8k': 'openai/gsm8k'
 }
- 
+
+
 
 def evaluate(script_args, training_args, model_args):
     # Setup logging
@@ -66,17 +68,18 @@ def evaluate(script_args, training_args, model_args):
             question = example["problem"]
         except:
             question = example["question"]
-        prompt = textwrap.dedent(f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>      
-
-            {training_args.system_prompt}
-            <|eot_id|><|start_header_id|>user<|end_header_id|>   
-
-            {question}
-            <|eot_id|><|start_header_id|>assistant<|end_header_id|>""")
+        prompt =(
+            "<|begin_of_text|><|start_header_id|>system<|end_header_id|>      \n\n"
+            f"{training_args.system_prompt}\n"
+            "<|eot_id|><|start_header_id|>user<|end_header_id|>   \n\n"
+            f"{question}\n"
+            "<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
+        )
         return {"prompt": prompt}
 
     print("model_name: ",model_args.model_name_or_path.lower())
     if "llama" in model_args.model_name_or_path.lower():
+        print("llama dataset mapping")
         dataset = dataset.map(make_conversation_llama)
     else:
         dataset = dataset.map(make_conversation)
@@ -121,10 +124,10 @@ def evaluate(script_args, training_args, model_args):
             peft_config = PeftConfig.from_pretrained(load_checkpoint)
             base_model = model_args.model_name_or_path
         else : 
-            base_model = load_checkpoint
+            base_model = os.path.join(load_checkpoint,"model")
             peft_config = get_peft_config(model_args)
     else : 
-        base_model = model_args.model_name_or_path
+        base_model = model_args.model_name_or_path 
         peft_config = get_peft_config(model_args)
     
     if model_args.use_unir==False:
