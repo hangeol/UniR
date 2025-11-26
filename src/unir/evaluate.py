@@ -124,7 +124,7 @@ def evaluate(script_args, training_args, model_args):
             peft_config = PeftConfig.from_pretrained(load_checkpoint)
             base_model = model_args.model_name_or_path
         else : 
-            base_model = os.path.join(load_checkpoint,"model")
+            base_model = load_checkpoint
             peft_config = get_peft_config(model_args)
     else : 
         base_model = model_args.model_name_or_path 

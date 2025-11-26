@@ -7,8 +7,8 @@ CUDA_VISIBLE_DEVICES=0 ACCELERATE_LOG_LEVEL=info accelerate launch \
   --ref_name_or_path Qwen/Qwen2.5-3B-Instruct \
   --model_name_or_path Qwen/Qwen2.5-0.5B-Instruct \
   --config recipes/unir.yaml \
-  --output_dir run/test2 \
   --run_name test \
+  --output_dir run/test \
   --num_generations 2 \
   --per_device_eval_batch_size 2 \
   --per_device_train_batch_size  2 \

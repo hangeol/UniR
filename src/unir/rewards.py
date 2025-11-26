@@ -1016,6 +1016,7 @@ def normalize_completions(completions):
     if (
         isinstance(completions, list)
         and completions
+        and isinstance(completions[0], list)
         and isinstance(completions[0][0], dict)
         and 'content' in completions[0][0]
     ):

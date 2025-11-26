@@ -27,8 +27,9 @@ pip install vllm==0.7.2
 pip install setuptools
 pip install flash-attn --no-build-isolation
 pip install bitsandbytes
+pip install peft==0.14.0
 pip install -e .
-pip install peft datasets pylatexenc tensorboardx
+pip install datasets pylatexenc tensorboardx
 ```
 
 ## Training

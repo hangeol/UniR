@@ -143,17 +143,13 @@ class CombinedModel_qwen(Qwen2ForCausalLM):
         os.makedirs(save_directory, exist_ok=True)
 
         model_state_dict = {k.removeprefix("model."): v for k, v in state_dict.items() if k.startswith("model.")}
-        # ref_model_state_dict = {k.removeprefix("ref_model."): v for k, v in state_dict.items() if k.startswith("ref_model.")}
-
-        self.model.save_pretrained(os.path.join(save_directory, "model"), state_dict= model_state_dict, **kwargs)
-        # self.ref_model.save_pretrained(os.path.join(save_directory, "ref_model"), state_dict= ref_model_state_dict, **kwargs)
-        # self.config.save_pretrained(save_directory)
+        self.model.save_pretrained(save_directory, state_dict= model_state_dict, **kwargs)
 
     @classmethod
     def from_pretrained(cls, path, *args, **kwargs):
         from transformers import AutoModelForCausalLM, AutoConfig
         config = AutoConfig.from_pretrained(path)
-        model = AutoModelForCausalLM.from_pretrained(os.path.join(path, "model"))
+        model = AutoModelForCausalLM.from_pretrained(path)
         ref_model = AutoModelForCausalLM.from_pretrained(args.ref_name_or_path)
         # ref_model = AutoModelForCausalLM.from_pretrained(os.path.join(path, "ref_model"))
         return cls(config, model=model, ref_model=ref_model)
@@ -416,17 +412,13 @@ class CombinedModel_llama(LlamaForCausalLM):
         os.makedirs(save_directory, exist_ok=True)
 
         model_state_dict = {k.removeprefix("model."): v for k, v in state_dict.items() if k.startswith("model.")}
-        # ref_model_state_dict = {k.removeprefix("ref_model."): v for k, v in state_dict.items() if k.startswith("ref_model.")}
-
-        self.model.save_pretrained(os.path.join(save_directory, "model"), state_dict= model_state_dict, **kwargs)
-        # self.ref_model.save_pretrained(os.path.join(save_directory, "ref_model"), state_dict= ref_model_state_dict, **kwargs)
-        # self.config.save_pretrained(save_directory)
+        self.model.save_pretrained(save_directory, state_dict= model_state_dict, **kwargs)
 
     @classmethod
     def from_pretrained(cls, path, *args, **kwargs):
         from transformers import AutoModelForCausalLM, AutoConfig
         config = AutoConfig.from_pretrained(path)
-        model = AutoModelForCausalLM.from_pretrained(os.path.join(path, "model"))
+        model = AutoModelForCausalLM.from_pretrained(path)
         ref_model = AutoModelForCausalLM.from_pretrained(args.ref_name_or_path)
         # ref_model = AutoModelForCausalLM.from_pretrained(os.path.join(path, "ref_model"))
         return cls(config, model=model, ref_model=ref_model)
