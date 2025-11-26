@@ -35,8 +35,8 @@ from transformers import (
     AutoTokenizer,
     GenerationConfig,
     PreTrainedModel,
-    Qwen2ForCausalLM, 
-    LlamaForCausalLM, 
+    Qwen2ForCausalLM,
+    LlamaForCausalLM,
     PreTrainedTokenizerBase,
     Trainer,
     TrainerCallback,
@@ -45,7 +45,7 @@ from transformers import (
 from transformers.integrations.deepspeed import is_deepspeed_zero3_enabled
 from transformers.utils import is_peft_available
 
-from transformers.modeling_outputs import CausalLMOutputWithPast 
+from transformers.modeling_outputs import CausalLMOutputWithPast
 from peft import PeftModel
 
 from trl.data_utils import apply_chat_template, is_conversational, maybe_apply_chat_template
@@ -105,7 +105,7 @@ from transformers.trainer_utils import (
 
 )
 from transformers.integrations.deepspeed import deepspeed_init, deepspeed_load_checkpoint, is_deepspeed_available
-import time 
+import time
 from transformers.utils import (
     is_torch_xla_available,
     logging
@@ -176,7 +176,7 @@ class CombinedModel_qwen(Qwen2ForCausalLM):
         else:
             with torch.no_grad():
                 ref_out = self.ref_model(**ref_model_inputs)
-            
+           
             combined_logits = model_out.logits + ref_out.logits
 
         return CausalLMOutputWithPast(
@@ -185,7 +185,7 @@ class CombinedModel_qwen(Qwen2ForCausalLM):
             hidden_states=model_out.hidden_states if hasattr(model_out, "hidden_states") else None,
             attentions=model_out.attentions if hasattr(model_out, "attentions") else None
         )        
-    
+   
     def _sample(
         self,
         input_ids: torch.LongTensor,
@@ -238,7 +238,7 @@ class CombinedModel_qwen(Qwen2ForCausalLM):
         max_length = generation_config.max_length
         has_eos_stopping_criteria = any(hasattr(criteria, "eos_token_id") for criteria in stopping_criteria)
         do_sample = generation_config.do_sample
-        
+       
 
         # init attention / hidden states / scores tuples
         scores = () if (return_dict_in_generate and output_scores) else None
@@ -273,7 +273,7 @@ class CombinedModel_qwen(Qwen2ForCausalLM):
         is_prefill = True
 
         # UniR
-        ref_model_kwargs = copy.deepcopy(model_kwargs) 
+        ref_model_kwargs = copy.deepcopy(model_kwargs)
 
         while self._has_unfinished_sequences(
             this_peer_finished, synced_gpus, device=input_ids.device, cur_len=cur_len, max_length=max_length
@@ -452,7 +452,7 @@ class CombinedModel_llama(LlamaForCausalLM):
         else:
             with torch.no_grad():
                 ref_out = self.ref_model(**ref_model_inputs)
-            
+           
             combined_logits = model_out.logits + ref_out.logits
 
         return CausalLMOutputWithPast(
@@ -461,7 +461,7 @@ class CombinedModel_llama(LlamaForCausalLM):
             hidden_states=model_out.hidden_states if hasattr(model_out, "hidden_states") else None,
             attentions=model_out.attentions if hasattr(model_out, "attentions") else None
         )        
-    
+   
     def _sample(
         self,
         input_ids: torch.LongTensor,
@@ -548,7 +548,7 @@ class CombinedModel_llama(LlamaForCausalLM):
         is_prefill = True
 
         # UniR
-        ref_model_kwargs = copy.deepcopy(model_kwargs) 
+        ref_model_kwargs = copy.deepcopy(model_kwargs)
 
         while self._has_unfinished_sequences(
             this_peer_finished, synced_gpus, device=input_ids.device, cur_len=cur_len, max_length=max_length
@@ -852,8 +852,8 @@ class UniRGRPOTrainer(Trainer):
     def __init__(
         self,
         model: Union[str, PreTrainedModel],
-        ref_model: Union[str, PreTrainedModel], 
-        use_unir: bool, 
+        ref_model: Union[str, PreTrainedModel],
+        use_unir: bool,
         reward_funcs: Union[RewardFunc, list[RewardFunc]],
         args: Optional[GRPOConfig] = None,
         train_dataset: Optional[Union[Dataset, IterableDataset]] = None,
@@ -895,9 +895,9 @@ class UniRGRPOTrainer(Trainer):
             )
             # if isinstance(model, str) and re.search(r"checkpoint-\d+$", model) and args.do_eval : # UNiR EVAL Load  Traned Base Model
             #     model = AutoModelForCausalLM.from_pretrained(os.path.join(model, "model"))
-            # else : 
+            # else :
             model = AutoModelForCausalLM.from_pretrained(model, **model_init_kwargs)
-            
+           
         else:
             model_id = model.config._name_or_path
             if args.model_init_kwargs is not None:
@@ -921,12 +921,12 @@ class UniRGRPOTrainer(Trainer):
 
         # Reference model
         self.beta = args.beta
-        
-        
+       
+       
         if isinstance(ref_model, str) and ref_model != 'None':# in UNiR
             self.ref_name_or_path = ref_model
             self.ref_model = AutoModelForCausalLM.from_pretrained(self.ref_name_or_path, **model_init_kwargs)            
-    
+   
             for param in self.ref_model.parameters():
                 param.requires_grad = False
         elif self.beta == 0.0:
@@ -943,7 +943,7 @@ class UniRGRPOTrainer(Trainer):
             self.ref_model = create_reference_model(model)
 
         self.use_unir = use_unir
-        
+       
         if self.ref_model == "None":
             self.ref_model = None
         if self.use_unir == True:
@@ -955,14 +955,14 @@ class UniRGRPOTrainer(Trainer):
             else:
                 print("llama reasoning module load")
                 model = CombinedModel_llama(config = model.config, model = model, ref_model = self.ref_model)
-            
+           
         else:
             print("Base GRPO start",model)
         # Reference model
         print("ref_model",self.ref_model)
 
-        
-        
+       
+       
         # Processing class
         if processing_class is None:
             processing_class = AutoTokenizer.from_pretrained(model.config._name_or_path, padding_side="left")
@@ -1079,7 +1079,7 @@ class UniRGRPOTrainer(Trainer):
         # transformers if num_generations exceeds per_device_train_batch_size. We could skip it if we use vLLM, but
         # it's safer to set it in all cases.
         set_seed(args.seed, device_specific=True)
-        
+       
         if self.use_vllm:
             if not is_vllm_available():
                 raise ImportError(
@@ -1136,7 +1136,7 @@ class UniRGRPOTrainer(Trainer):
                     guided_decoding = GuidedDecodingParams(backend="outlines", regex=args.vllm_guided_decoding_regex)
                 else:
                     guided_decoding = None
-                
+               
                 # Sampling parameters
                 self.sampling_params = SamplingParams(
                     temperature=args.temperature,
@@ -1156,11 +1156,11 @@ class UniRGRPOTrainer(Trainer):
                 print("Using greedy decoding")
                 self.generation_config = GenerationConfig(
                     max_new_tokens=self.max_completion_length,
-                    do_sample=False, 
+                    do_sample=False,
                     temperature=args.temperature,
                     pad_token_id=processing_class.pad_token_id,
                 )
-            else : 
+            else :
                 print("Using sampling")
                 self.generation_config = GenerationConfig(
                     max_new_tokens=self.max_completion_length,
@@ -1396,8 +1396,8 @@ class UniRGRPOTrainer(Trainer):
         # Mask everything after the first EOS token
         is_eos = completion_ids == self.processing_class.eos_token_id
         eos_idx = torch.full((is_eos.size(0),), is_eos.size(1), dtype=torch.long, device=device)
-        
-        
+       
+       
         has_eos = is_eos.any(dim=1)
         if has_eos.any():
             eos_idx[is_eos.any(dim=1)] = is_eos.int().argmax(dim=1)[is_eos.any(dim=1)]
@@ -1410,27 +1410,34 @@ class UniRGRPOTrainer(Trainer):
 
         logits_to_keep = completion_ids.size(1)  # we only need to compute the logits for the completion tokens
 
-        with torch.inference_mode():
-            # When using num_iterations == 1, old_per_token_logps == per_token_logps, so we can skip it's
-            # computation here, and use per_token_logps.detach() instead.
-            if self.num_iterations > 1:
-                old_per_token_logps = self._get_per_token_logps(
-                    self.model, prompt_completion_ids, attention_mask, logits_to_keep
-                )
-            else:
-                old_per_token_logps = None
-
-            if self.beta == 0.0:
-                ref_per_token_logps = None
-            elif self.ref_model is not None:
-                ref_per_token_logps = self._get_per_token_logps(
-                    self.ref_model, prompt_completion_ids, attention_mask, logits_to_keep
-                )
-            else:
-                with self.accelerator.unwrap_model(self.model).disable_adapter():
-                    ref_per_token_logps = self._get_per_token_logps(
+        # During evaluation, we don't need to compute per-token logps (they're only needed for training loss)
+        # Skip this computation to save memory, especially when using vLLM
+        if self.model.training:
+            with torch.inference_mode():
+                # When using num_iterations == 1, old_per_token_logps == per_token_logps, so we can skip it's
+                # computation here, and use per_token_logps.detach() instead.
+                if self.num_iterations > 1:
+                    old_per_token_logps = self._get_per_token_logps(
                         self.model, prompt_completion_ids, attention_mask, logits_to_keep
                     )
+                else:
+                    old_per_token_logps = None
+
+                if self.beta == 0.0:
+                    ref_per_token_logps = None
+                elif self.ref_model is not None:
+                    ref_per_token_logps = self._get_per_token_logps(
+                        self.ref_model, prompt_completion_ids, attention_mask, logits_to_keep
+                    )
+                else:
+                    with self.accelerator.unwrap_model(self.model).disable_adapter():
+                        ref_per_token_logps = self._get_per_token_logps(
+                            self.model, prompt_completion_ids, attention_mask, logits_to_keep
+                        )
+        else:
+            # During evaluation, set to None to avoid unnecessary computation
+            old_per_token_logps = None
+            ref_per_token_logps = None
 
 
         # Decode the generated completions
@@ -1452,7 +1459,7 @@ class UniRGRPOTrainer(Trainer):
                 completions.append([{"role": "assistant", "content": bootstrap + completion}])
         else:
             completions = completions_text
-        
+       
         ##added
         for inp in inputs:
             if 'answer' not in inp and 'solution' in inp:
@@ -1479,17 +1486,17 @@ class UniRGRPOTrainer(Trainer):
                 # Repeat all input columns (but "prompt" and "completion") to match the number of generations
                 keys = [key for key in inputs[0] if key not in ["prompt", "completion"]]
                 reward_kwargs = {key: [example[key] for example in inputs] for key in keys}
-                
+               
                 # if 'answer' in keys and 'solution' not in keys:
                 #     reward_kwargs['solution'] = gold_answer
-                # else : ## open-rs dataset 
+                # else : ## open-rs dataset
                 #     reward_kwargs['solution'] = reward_kwargs['answer']
                 # math12k
                 reward_kwargs['solution'] = gold_answer
-                
+               
                 output_reward_func = reward_func(prompts=prompts, completions=completions, **reward_kwargs)
                 rewards_per_func[:, i] = torch.tensor(output_reward_func, dtype=torch.float32, device=device)
-        
+       
         # Gather the reward per function: this part is crucial, because the rewards are normalized per group and the
         # completions may be distributed across processes
         rewards_per_func = gather(rewards_per_func)
@@ -1501,7 +1508,7 @@ class UniRGRPOTrainer(Trainer):
         if self.num_generations > 1:
             mean_grouped_rewards = rewards.view(-1, self.num_generations).mean(dim=1)
             std_grouped_rewards = rewards.view(-1, self.num_generations).std(dim=1)
-            
+           
             # Normalize the rewards to compute the advantages
             mean_grouped_rewards = mean_grouped_rewards.repeat_interleave(self.num_generations, dim=0)
             std_grouped_rewards = std_grouped_rewards.repeat_interleave(self.num_generations, dim=0)
@@ -1509,7 +1516,7 @@ class UniRGRPOTrainer(Trainer):
         else:
             advantages = rewards
             std_grouped_rewards = torch.zeros_like(rewards)
-        
+       
         # Slice to keep only the local part of the data
         process_slice = slice(
             self.accelerator.process_index * len(prompts),
@@ -1642,18 +1649,25 @@ class UniRGRPOTrainer(Trainer):
         clip_ratio = (is_clipped * completion_mask).sum() / completion_mask.sum()
         self._metrics[mode]["clip_ratio"].append(self.accelerator.gather_for_metrics(clip_ratio).mean().item())
         return loss
-    
+   
     def prediction_step(self, model, inputs, prediction_loss_only, ignore_keys: Optional[list[str]] = None):
         inputs = self._prepare_inputs(inputs)
 
-        with torch.no_grad():
-            with self.compute_loss_context_manager():
-                loss = self.compute_loss(model, inputs)
-            loss = loss.mean().detach()
+        # During evaluation, we don't need to compute loss (it's only needed for training)
+        # Skip loss computation to save memory, especially when using vLLM
+        if self.model.training:
+            with torch.no_grad():
+                with self.compute_loss_context_manager():
+                    loss = self.compute_loss(model, inputs)
+                loss = loss.mean().detach()
+        else:
+            # During evaluation, return a dummy loss value
+            loss = torch.tensor(0.0, device=self.accelerator.device)
+       
         if prediction_loss_only :
             return loss, None, None
         else :
-            return loss, inputs['predict'], inputs['answer']
+            return loss, inputs.get('predict'), inputs.get('answer')
 
     def log(self, logs: dict[str, float], start_time: Optional[float] = None) -> None:
         mode = "eval" if self.control.should_evaluate else "train"
@@ -1664,7 +1678,7 @@ class UniRGRPOTrainer(Trainer):
         print(f"[INFO] Saved metrics to {metrics_save_path}")
         with open(metrics_save_path, "w") as f:
                 json.dump(metrics, f, indent=2)
-        
+       
         # This method can be called both in training and evaluation. When called in evaluation, the keys in `logs`
         # start with "eval_". We need to add the prefix "eval_" to the keys in `metrics` to match the format.
         if mode == "eval":
