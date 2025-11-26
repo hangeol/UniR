@@ -117,13 +117,13 @@ def main(script_args, training_args, model_args):
             question = example["problem"]
         except:
             question = example["question"]
-        prompt = textwrap.dedent(f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>      
-
-            {training_args.system_prompt}
-            <|eot_id|><|start_header_id|>user<|end_header_id|>   
-
-            {question}
-            <|eot_id|><|start_header_id|>assistant<|end_header_id|>""")
+        prompt =(
+            "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n"
+            f"{training_args.system_prompt}\n"
+            "<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n"
+            f"{question}\n"
+            "<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"
+        )
         return {"prompt": prompt}
 
     if "llama" in model_args.model_name_or_path.lower():

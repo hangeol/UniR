@@ -69,11 +69,11 @@ def evaluate(script_args, training_args, model_args):
         except:
             question = example["question"]
         prompt =(
-            "<|begin_of_text|><|start_header_id|>system<|end_header_id|>      \n\n"
+            "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n"
             f"{training_args.system_prompt}\n"
-            "<|eot_id|><|start_header_id|>user<|end_header_id|>   \n\n"
+            "<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n"
             f"{question}\n"
-            "<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
+            "<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"
         )
         return {"prompt": prompt}
 
